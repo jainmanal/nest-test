@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 import { AppGateway } from "./app.gatway";
 import { User } from './User/user.entity';
 import { UserModule } from './User/user.module';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './Auth/auth.module';
 
 
 @Module({
