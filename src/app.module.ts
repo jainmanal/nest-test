@@ -6,7 +6,7 @@ import { AppGateway } from "./app.gatway";
 import { User } from './User/user.entity';
 import { UserModule } from './User/user.module';
 import { AuthModule } from './Auth/auth.module';
-
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -19,6 +19,7 @@ import { AuthModule } from './Auth/auth.module';
       database: "postgres",
       entities: [User]
     }),
+    ConfigModule.forRoot(),
     UserModule,
     AuthModule,
   ],
