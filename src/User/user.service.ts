@@ -12,10 +12,13 @@ export class UserService {
 
   async getUser():Promise<User[]>{
     const userData = await this.userRepository.find();
-    console.log(userData)
     const usersList = []
     await userData.map((user)=>{
-      usersList.push(user.username)
+      usersList.push({
+        id : user.id, 
+        username : user.username,
+        email: user.email
+      })
     })
     return usersList;
   }
@@ -27,6 +30,11 @@ export class UserService {
 
   async findOneUser(username: string): Promise<User> {
     const user = await this.userRepository.findOne({ where : { username: username }});
+    return user;
+  }
+
+  async getUserDetailById(id): Promise<User> {
+    const user = await this.userRepository.findOne({ where : { id: id }});
     return user;
   }
   

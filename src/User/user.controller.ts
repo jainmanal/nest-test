@@ -12,11 +12,17 @@ export class UserController {
     private authService: AuthService
   ) {}
 
-  @Get("get")
+  @Get("list")
   findUserData(){
     return  this.userService.getUser();
   }
-  
+
+  @UseGuards(JwtAuthGuard)
+  @Get("detail")
+  async get(@Req() req){
+    const { id } = req.body;
+    return await this.userService.getUserDetailById(id)
+  }
   
   @Post("signup")
   async addUserData(@Body() body){
@@ -47,27 +53,22 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Put("update")
   async update(@Body() body){
-    const user = await this.userService.findUserByEmail(body.email)
-    if(user?.id){
-        const hashedPassword = await bcrypt.hash(body.password, 12);
-        body.password = hashedPassword;
-        const res = await this.userService.update(body, user.id)
-        return res.affected ? { message: "Account Updated!" } : { message: "No record found!" }
-    }else{
-        return { message: "something went wrong!" }
-    }
+    const { id } = body;
+      if(body.password){
+          const hashedPassword = await bcrypt.hash(body.password, 12);
+          body.password = hashedPassword;
+      }
+      delete body.id;
+      const res = await this.userService.update(body, id)
+      return res.affected ? { message: "Account Updated!" } : { message: "No record found!" }
   }
   
   @UseGuards(JwtAuthGuard)
   @Delete("delete")
   async delete(@Req() req){
-    const user = await this.userService.findUserByEmail(req.email)
-    if(user?.id){
-        const res = await this.userService.delete(user.id)
-        return res.affected ? { message: "Account deleted!" } : { message: "No record found!" }
-    }else{
-        return { message: "something went wrong!" }
-    }
+    const { id } = req.body;
+    const res = await this.userService.delete(id)
+    return res.affected ? { message: "Account deleted!" } : { message: "No record found!" }
   }
 
 }
