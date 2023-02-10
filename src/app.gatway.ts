@@ -42,6 +42,7 @@ import {
 
     @SubscribeMessage('message') 
     addMessage(socket: Socket, message) {
+      socket.broadcast.emit('message', {text: message, from: this.names[socket.id], created: new Date()});
       socket.emit('message', {text: message, from: this.names[socket.id], created: new Date()});
     }
   }
