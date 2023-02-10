@@ -21,7 +21,7 @@ export class UserController {
   @Get("detail")
   async get(@Req() req){
     const { id } = req.body;
-    return await this.userService.getUserDetailById(id)
+    return await this.userService.getUserDetailById(id) ?? { message: "User does not exist!"}
   }
   
   @Post("signup")
