@@ -24,6 +24,7 @@ import {
     }
   
     async handleConnection(client: Socket, ...args: any[]) {
+        client.join("room");
         console.log(`Client connected ${client.id}`);
     }
 
@@ -42,7 +43,12 @@ import {
 
     @SubscribeMessage('message') 
     addMessage(socket: Socket, message) {
-      socket.broadcast.emit('message', {text: message, from: this.names[socket.id], created: new Date()});
+      const clients = Array.from(
+        this.server.sockets.adapter.rooms.get('room') || []
+      );
+      clients.forEach((clientID) => {
+        socket.to(clientID).emit('message', {text: message, from: this.names[socket.id], created: new Date()});
+      });
       socket.emit('message', {text: message, from: this.names[socket.id], created: new Date()});
     }
   }
